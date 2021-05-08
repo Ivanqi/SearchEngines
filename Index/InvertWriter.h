@@ -3,9 +3,10 @@
 
 #include <string>
 #include <map>
-#include "Message/DocId.h"
 
-using Message::DocId;
+#include "DocList.h"
+#include "NewMemoryDocList.h"
+#include "Message/message.pb.h"
 
 namespace Index 
 {
@@ -13,7 +14,7 @@ namespace Index
     {
         private:
             std::string name_;
-            std::map<DocId> tmpInvert_;
+            std::map<std::string, DocList> tmpInvert_;
         
         public:
             InvertWriter(std::string name)
@@ -22,13 +23,14 @@ namespace Index
 
             }
 
-            void put (std::string key, DocId docid)
+            void put (std::string key, Message::DocId docid)
             {
                 if (tmpInvert_.find(key) == tmpInvert_.end()) {
-                    tmpInvert_[key] = docid;
+                    tmpInvert_[key] = NewMemoryDocList();
                 }
-            }
 
+                tmpInvert_[key].Push(docid);
+            }
     };
 };
 
