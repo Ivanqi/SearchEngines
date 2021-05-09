@@ -12,7 +12,7 @@ namespace Store
             std::string name_;
 
         public:
-            void NewFalconFileStoreWriteService(std::string name)
+            void NewFileStoreWriteService(std::string name)
             {
                 name_ = name;
                 std::ifstream ifs;
