@@ -20,6 +20,8 @@ namespace Store
                 ifs.open(name, std::ios::in | std::ios::out | std::ios::binary);
                 ifs.close();
             }
+
+            NewFileStoreReadService
     };
 };
 

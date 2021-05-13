@@ -41,7 +41,7 @@ namespace Index
 
                 if (docListSize > 0 && docid.docid() <= docList_[docListSize - 1].docid()) {
                     printf("Doc Id [ %d ] is wrong,max id is : [ %d ]", docid.docid(), docList_[docListSize - 1].docid());
-                   return false; 
+                    return false; 
                 }
 
                 docList_.push_back(docid);
