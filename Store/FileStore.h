@@ -21,7 +21,7 @@ namespace Store
                 ifs.close();
             }
 
-            NewFileStoreReadService
+            NewFileStoreReadService(std::string name)
     };
 };
 
