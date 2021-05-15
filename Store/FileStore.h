@@ -3,6 +3,7 @@
 
 #include <string>
 #include <fstream> 
+#include <stdio.h>
 
 namespace Store
 {
@@ -11,6 +12,7 @@ namespace Store
         private:
             std::string name_;
             std::ifstream ifs_;
+            FILE *pFile_;
 
         public:
             FileStore(std::string name)
@@ -21,16 +23,15 @@ namespace Store
 
             ~FileStore()
             {
-                if (ifs_) {
-                    ifs_.close();
+                if (pFile_ != NULL) {
+                    fclose(pFile_);
                 }
             }
 
             bool NewFileStoreWriteService()
             {
-
-                ifs_.open(name_, std::ios::in | std::ios::out | std::ios::binary);
-                return ifs_ ? true : false;
+                pFile_  = fopen(name_.c_str(), "w+");
+                return (pFile_ != NULL ? true : false);
             }
 
             // NewFileStoreReadService(std::string name)
