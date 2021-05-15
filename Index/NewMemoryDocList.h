@@ -2,10 +2,12 @@
 #define INDEX_NEW_MEMORY_DOCLIST_H
 
 #include "DocList.h"
-#include "Message/message.pb.h"
+#include "message.pb.h"
 
 #include <vector>
 #include <stdio.h>
+
+using namespace Message;
 
 namespace Index
 {

@@ -3,10 +3,13 @@
 
 #include <string>
 #include <map>
+#include <memory>
 
 #include "DocList.h"
 #include "NewMemoryDocList.h"
-#include "Message/message.pb.h"
+#include "message.pb.h"
+
+using namespace Message;
 
 namespace Index 
 {
@@ -14,7 +17,8 @@ namespace Index
     {
         private:
             std::string name_;
-            std::map<std::string, DocList> tmpInvert_;
+            typedef std::shared_ptr<DocList> DocListPtr;
+            std::map<std::string, DocListPtr> tmpInvert_;
         
         public:
             InvertWriter(std::string name)
@@ -26,10 +30,10 @@ namespace Index
             void put (std::string key, Message::DocId docid)
             {
                 if (tmpInvert_.find(key) == tmpInvert_.end()) {
-                    tmpInvert_[key] = NewMemoryDocList();
+                    tmpInvert_[key] = DocListPtr(new NewMemoryDocList());
                 }
 
-                tmpInvert_[key].Push(docid);
+                tmpInvert_[key]->Push(docid);
             }
     };
 };

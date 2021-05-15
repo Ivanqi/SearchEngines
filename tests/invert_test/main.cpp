@@ -1,13 +1,19 @@
 #include <stdio.h>
 #include <FileStore.h>
+#include <InvertWriter.h>
 
 using namespace Store;
+using namespace Index;
 
 void test_case_1()
 {
-    FileStore fs("./data/abc.ivt");
-    bool ret = fs.NewFileStoreWriteService();
+    FileStore invertListStore("./abc.ivt");
+    bool ret = invertListStore.NewFileStoreWriteService();
     printf("ret: %d\n", ret);
+
+    FileStore dictStore("./abc.dic");
+    dictStore.NewFileStoreWriteService();
+
 }
 
 int main() {

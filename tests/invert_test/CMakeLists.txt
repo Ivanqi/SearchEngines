@@ -12,6 +12,11 @@ message(STATUS "PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}")
 INCLUDE_DIRECTORIES(
     ../../Index
     ../../Store
+    ../../Message
 )
 
-add_executable(invert_test main.cpp)
+set(src_dir
+    ../../Message/message.pb.cc
+)
+
+add_executable(invert_test  ${src_dir} main.cpp)

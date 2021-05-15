@@ -1,7 +1,9 @@
 #ifndef INDEX_DOCLIST_H
 #define INDEX_DOCLIST_H
 
-#include "Message/message.pb.h"
+#include "message.pb.h"
+
+using namespace Message;
 
 namespace Index
 {
