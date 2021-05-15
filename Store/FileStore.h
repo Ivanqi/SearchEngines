@@ -10,18 +10,30 @@ namespace Store
     {
         private:
             std::string name_;
+            std::ifstream ifs_;
 
         public:
-            void NewFileStoreWriteService(std::string name)
+            FileStore(std::string name)
+                :name_(name)
             {
-                name_ = name;
-                std::ifstream ifs;
 
-                ifs.open(name, std::ios::in | std::ios::out | std::ios::binary);
-                ifs.close();
             }
 
-            NewFileStoreReadService(std::string name)
+            ~FileStore()
+            {
+                if (ifs_) {
+                    ifs_.close();
+                }
+            }
+
+            bool NewFileStoreWriteService()
+            {
+
+                ifs_.open(name_, std::ios::in | std::ios::out | std::ios::binary);
+                return ifs_ ? true : false;
+            }
+
+            // NewFileStoreReadService(std::string name)
     };
 };
 
