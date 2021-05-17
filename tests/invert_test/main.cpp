@@ -8,11 +8,11 @@ using namespace Index;
 void test_case_1()
 {
     FileStore invertListStore("./abc.ivt");
-    bool ret = invertListStore.NewFileStoreWriteService();
+    bool ret = invertListStore.newFileStoreWriteService();
     printf("ret: %d\n", ret);
 
     FileStore dictStore("./abc.dic");
-    dictStore.NewFileStoreWriteService();
+    dictStore.newFileStoreWriteService();
 
     InvertWriter iw("abc");
 

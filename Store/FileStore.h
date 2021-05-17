@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream> 
 #include <stdio.h>
+#include "DicMapStruct.h"
 
 namespace Store
 {
@@ -11,7 +12,6 @@ namespace Store
     {
         private:
             std::string name_;
-            std::ifstream ifs_;
             FILE *pFile_;
 
         public:
@@ -28,10 +28,15 @@ namespace Store
                 }
             }
 
-            bool NewFileStoreWriteService()
+            bool newFileStoreWriteService()
             {
                 pFile_  = fopen(name_.c_str(), "w+");
                 return (pFile_ != NULL ? true : false);
+            }
+
+            void appendBytes(Tools::DictMapStruct& dms)
+            {
+                fwrite(&dms, sizeof(Tools::DictMapStruct), 1, pFile_);
             }
 
             // NewFileStoreReadService(std::string name)

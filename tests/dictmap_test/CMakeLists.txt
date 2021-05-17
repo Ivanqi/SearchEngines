@@ -1,6 +1,6 @@
   
 cmake_minimum_required(VERSION 2.8)
-project(invert_test CXX)
+project(dictmap_test CXX)
 
 set(CMAKE_CXX_COMPILER "c++")
 set(CMAKE_CXX_STANDARD 11)
@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES(
     ../../Store
     ../../Message
     ../../Dict
+    ../../tools
 )
 
 set(src_dir
@@ -23,4 +24,4 @@ set(src_dir
 
 add_executable(dictmap_test ${src_dir} main.cpp)
 
-target_link_libraries(invert_test protobuf)
+target_link_libraries(dictmap_test protobuf)

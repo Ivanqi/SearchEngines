@@ -3,7 +3,12 @@
 
 #include <map>
 #include <string>
-#include "Message/message.pb.h"
+#include "message.pb.h"
+#include "FileStore.h"
+#include "DicMapStruct.h"
+
+using namespace Store;
+using namespace Tools;
 
 namespace Index
 {
@@ -18,6 +23,16 @@ namespace Index
             void put(std::string key, Message::DictValue dv)
             {
                 dic_[key] = dv;
+            }
+
+            void persistence(FileStore& storeService)
+            {
+                DictMapStruct dms; 
+                for (auto dic: dic_) {
+                    dms.key = dic.first;
+                    dms.dv = dic.second;
+                    storeService.appendBytes(dms);
+                }
             }
     };
 };
