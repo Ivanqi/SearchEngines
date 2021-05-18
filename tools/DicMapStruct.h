@@ -8,7 +8,7 @@ namespace Tools
 {
     struct DictMapStruct
     {
-        std::string key;
+        const char* key;
         Message::DictValue dv;
     };
 };

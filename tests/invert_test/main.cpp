@@ -39,8 +39,6 @@ void test_case_1()
     iw.put("a", dId_5);
     iw.put("b", dId_6);
     iw.put("b", dId_7);
-
-    
 }
 
 int main() {

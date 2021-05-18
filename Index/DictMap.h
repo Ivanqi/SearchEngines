@@ -3,9 +3,9 @@
 
 #include <map>
 #include <string>
+#include <iostream>
 #include "message.pb.h"
 #include "FileStore.h"
-#include "DicMapStruct.h"
 
 using namespace Store;
 using namespace Tools;
@@ -25,13 +25,22 @@ namespace Index
                 dic_[key] = dv;
             }
 
-            void persistence(FileStore& storeService)
+            void persistence(FileStore storeService)
             {
-                DictMapStruct dms; 
+                storeService.appendBytes(dic_);
+            }
+
+            void LoadDic(FileStore storeService)
+            {
+                std::map<std::string, Message::DictValue> dic;
+                storeService.readFullBytes(&dic);
+                dic_.swap(dic);
+            }
+
+            void toString()
+            {
                 for (auto dic: dic_) {
-                    dms.key = dic.first;
-                    dms.dv = dic.second;
-                    storeService.appendBytes(dms);
+                    std::cout << "key:" << dic.first << " | offset: " << dic.second.offset() << ", length: " << dic.second.length() <<std::endl;
                 }
             }
     };
