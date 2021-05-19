@@ -30,7 +30,7 @@ namespace Store
                 munmap(mmapBytes_, fileSize_);
             }
 
-            void NewSearchFileMMapStore()
+            void newSearchFileMMapStore()
             {
                 int fd = open(name_.c_str(), O_RDWR);
                 FILE *f = fdopen(fd, "rw");
@@ -43,6 +43,11 @@ namespace Store
                     printf("mmap error");
                 }
                 close(fd);
+            }
+
+            void readFullBytes(int64_t offset, int64_t len)
+            {
+                
             }
 
     };

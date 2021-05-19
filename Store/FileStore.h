@@ -15,10 +15,11 @@ namespace Store
     {
         private:
             std::string name_;
+            int64_t end_;
 
         public:
             FileStore(std::string name)
-                :name_(name)
+                :name_(name), end_(0)
             {
 
             }
@@ -48,7 +49,7 @@ namespace Store
                 fclose(pFile);
             }
 
-            void appendBytes(std::map<std::string, Message::DictValue>& dic)
+            int64_t appendBytes(std::map<std::string, Message::DictValue>& dic)
             {
                 Tools::DictMapStruct dms;
                 FILE *pFile  = fopen(name_.c_str(), "wb+");
@@ -57,13 +58,19 @@ namespace Store
                     return;
                 }
 
+                int dmsLen = sizeof(Tools::DictMapStruct);
+                int64_t ret = end_;
+                
                 for (auto d: dic) {
                     dms.key = d.first.c_str();
                     dms.dv = d.second;
-                    fwrite(&dms, sizeof(Tools::DictMapStruct), 1, pFile);
+                    end_ += dmsLen;
+                    fwrite(&dms, dmsLen, 1, pFile);
                 }
 
                 fclose(pFile);
+
+                return ret;
             }
 
             void readFullBytes(std::map<std::string, Message::DictValue>* dic)
