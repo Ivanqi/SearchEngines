@@ -8,10 +8,11 @@
 #include <map>
 #include <message.pb.h>
 #include "DicMapStruct.h"
+#include "StoreService.h"
 
 namespace Store
 {
-    class FileStore
+    class FileStore: public StoreService
     {
         private:
             std::string name_;
@@ -49,27 +50,28 @@ namespace Store
                 fclose(pFile);
             }
 
-            int64_t appendBytes(std::map<std::string, Message::DictValue>& dic)
+            int64_t appendBytes(std::map<std::string, Message::DictValue>& dic, int64_t& maxLen)
             {
                 Tools::DictMapStruct dms;
                 FILE *pFile  = fopen(name_.c_str(), "wb+");
                 if (!pFile) {
                     printf("打开文件失败!");
-                    return;
+                    return -1;
                 }
 
                 int dmsLen = sizeof(Tools::DictMapStruct);
                 int64_t ret = end_;
-                
+                int64_t len = 0;
+
                 for (auto d: dic) {
                     dms.key = d.first.c_str();
                     dms.dv = d.second;
-                    end_ += dmsLen;
+                    len += dmsLen;
                     fwrite(&dms, dmsLen, 1, pFile);
                 }
 
                 fclose(pFile);
-
+                maxLen = len;
                 return ret;
             }
 
@@ -97,6 +99,11 @@ namespace Store
                 }
 
                 dic->swap(tmp);
+            }
+
+            void readFullBytes(int64_t offset, int64_t len)
+            {
+                
             }
 
             // NewFileStoreReadService(std::string name)

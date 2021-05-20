@@ -5,17 +5,16 @@
 #include <string>
 #include <iostream>
 #include "message.pb.h"
-#include "FileStore.h"
+#include "StoreService.h"
 
 using namespace Store;
-using namespace Tools;
 
 namespace Index
 {
     class DictMap
     {
         private:
-            uint64_t storeBodyLength_;
+            int64_t storeBodyLength_;
             int64_t startOffset_;
             std::map<std::string, Message::DictValue> dic_;
         
@@ -25,16 +24,17 @@ namespace Index
                 dic_[key] = dv;
             }
 
-            void persistence(FileStore storeService)
+            void persistence(StoreService *storeService)
             {
-                storeService.appendBytes(dic_);
+                startOffset_ = storeService->appendBytes(dic_, storeBodyLength_);
+                std::cout << "startOffset_:" << startOffset_ << " | storeBodyLength_:" << storeBodyLength_ << std::endl;
             }
 
-            void LoadDic(FileStore storeService)
+            void LoadDic(StoreService *storeService)
             {
-                std::map<std::string, Message::DictValue> dic;
-                storeService.readFullBytes(&dic);
-                dic_.swap(dic);
+                // std::map<std::string, Message::DictValue> dic;
+                // storeService.readFullBytes(&dic);
+                // dic_.swap(dic);
             }
 
             void toString()

@@ -9,9 +9,11 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
+#include "StoreService.h"
+
 namespace Store
 {
-    class FileMmapStore
+    class FileMmapStore: public StoreService
     {
         private:
             std::string name_;
@@ -47,7 +49,7 @@ namespace Store
 
             void readFullBytes(int64_t offset, int64_t len)
             {
-                
+
             }
 
     };

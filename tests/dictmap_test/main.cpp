@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <DictMap.h>
+#include "FileStore.h"
+#include "FileMmapStore.h"
 
 using namespace Index;
 
@@ -19,7 +21,7 @@ void test_case_1() {
     mapWriter.put("hello2", dv_2);
     mapWriter.put("hello3", dv_3);
 
-    FileStore fmapWriter("./map.dic");
+    FileStore *fmapWriter = new FileStore("./map.dic");
 
 
     for (int i = 0; i < 100; i++) {
@@ -32,8 +34,11 @@ void test_case_1() {
 
     mapWriter.persistence(fmapWriter);
 
-    mapWriter.LoadDic(fmapWriter);
-    mapWriter.toString();
+    // FileMmapStore fms("./map.dic");
+    // fms.newSearchFileMMapStore();
+
+    // mapWriter.LoadDic(fmapWriter);
+    // mapWriter.toString();
 }
 
 int main() {
