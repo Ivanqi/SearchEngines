@@ -7,7 +7,6 @@
 #include <iostream>
 #include <map>
 #include <message.pb.h>
-#include "DicMapStruct.h"
 #include "StoreService.h"
 
 namespace Store
@@ -41,41 +40,63 @@ namespace Store
 
             void appendBytes(std::string key, Message::DictValue dv)
             {
-                Tools::DictMapStruct dms;
+                StoreBody dms;
                 dms.key = key.c_str();
                 dms.dv = dv;
 
                 FILE *pFile  = fopen(name_.c_str(), "w+");
-                fwrite(&dms, sizeof(Tools::DictMapStruct), 1, pFile);
+                fwrite(&dms, sizeof(StoreBody), 1, pFile);
                 fclose(pFile);
             }
 
-            int64_t appendBytes(std::map<std::string, Message::DictValue>& dic, int64_t& maxLen)
+            int64_t appendBytes(std::map<std::string, Message::DictValue>& dic)
             {
-                Tools::DictMapStruct dms;
                 FILE *pFile  = fopen(name_.c_str(), "wb+");
                 if (!pFile) {
                     printf("打开文件失败!");
                     return -1;
                 }
 
-                int dmsLen = sizeof(Tools::DictMapStruct);
+                StoreBody sb;
+                StoreHeader sh;
+
+                unsigned long sbLen = sizeof(StoreBody);
                 int64_t ret = end_;
                 int64_t len = 0;
 
+                // 写入头部信息
+                int dictSize = dic.size();
+                sh.len = dictSize * sbLen;
+                fwrite(&sh, sizeof(StoreHeader), 1, pFile);
+
+                // 写入内容
                 for (auto d: dic) {
-                    dms.key = d.first.c_str();
-                    dms.dv = d.second;
-                    len += dmsLen;
-                    fwrite(&dms, dmsLen, 1, pFile);
+                    sb.key = d.first.c_str();
+                    sb.dv = d.second;
+                    fwrite(&sb, sbLen, 1, pFile);
                 }
 
                 fclose(pFile);
-                maxLen = len;
                 return ret;
             }
 
-            void readFullBytes(std::map<std::string, Message::DictValue>* dic)
+            unsigned int loadHeader()
+            {
+                FILE *pFile  = fopen(name_.c_str(), "rb+");
+                if (!pFile) {
+                    printf("打开文件失败!");
+                    return -1;
+                }
+
+                 // 获取头部数据
+                StoreHeader sh;
+                fread(&sh, sizeof(StoreHeader), 1, pFile);
+                fclose(pFile);
+                unsigned int shLen = sh.len;      // 数据长度
+                return shLen;
+            }
+
+            void readFullBytes(int64_t offset, int64_t len, std::map<std::string, Message::DictValue>* dic)
             {
                 FILE *pFile  = fopen(name_.c_str(), "rb+");
                 if (!pFile) {
@@ -83,30 +104,24 @@ namespace Store
                     return;
                 }
 
-                fseek(pFile, 0L, SEEK_END);    // 定位到文件尾
-                int len = ftell(pFile);        // 获取到文件大小 字节数
-                rewind(pFile);                 // 文件指针复位 到文件头
+                // 略过头部数据字节
+                fseek(pFile, sizeof(StoreHeader), SEEK_SET);
 
                 int i = 0;
-                Tools::DictMapStruct dms;
+                StoreBody sb;
                 std::map<std::string, Message::DictValue> tmp;
+                unsigned long sbLen = sizeof(StoreBody);
 
-                while (i < len / sizeof(Tools::DictMapStruct)) {
-                    fread(&dms, sizeof(Tools::DictMapStruct), 1, pFile);
+                while (i < len / sbLen) {
+                    fread(&sb, sbLen, 1, pFile);
                     i++;
-                    std::string key(dms.key);
-                    tmp[key] = dms.dv;
+                    std::string key(sb.key);
+                    tmp[key] = sb.dv;
                 }
 
                 dic->swap(tmp);
+                fclose(pFile);
             }
-
-            void readFullBytes(int64_t offset, int64_t len)
-            {
-                
-            }
-
-            // NewFileStoreReadService(std::string name)
     };
 };
 

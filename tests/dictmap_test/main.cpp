@@ -24,7 +24,7 @@ void test_case_1() {
     FileStore *fmapWriter = new FileStore("./map.dic");
 
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 4; i < 100; i++) {
         std::string key = "hello" + std::to_string(i);
         Message::DictValue dv;
         dv.set_offset(100);
@@ -34,11 +34,11 @@ void test_case_1() {
 
     mapWriter.persistence(fmapWriter);
 
-    // FileMmapStore fms("./map.dic");
-    // fms.newSearchFileMMapStore();
+    FileMmapStore *fms = new FileMmapStore("./map.dic");
+    fms->newSearchFileMMapStore();
 
-    // mapWriter.LoadDic(fmapWriter);
-    // mapWriter.toString();
+    mapWriter.LoadDic(fms);
+    mapWriter.toString();
 }
 
 int main() {

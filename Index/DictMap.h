@@ -26,15 +26,16 @@ namespace Index
 
             void persistence(StoreService *storeService)
             {
-                startOffset_ = storeService->appendBytes(dic_, storeBodyLength_);
-                std::cout << "startOffset_:" << startOffset_ << " | storeBodyLength_:" << storeBodyLength_ << std::endl;
+                startOffset_ = storeService->appendBytes(dic_);
             }
 
             void LoadDic(StoreService *storeService)
             {
-                // std::map<std::string, Message::DictValue> dic;
-                // storeService.readFullBytes(&dic);
-                // dic_.swap(dic);
+                std::map<std::string, Message::DictValue> dic;
+                storeBodyLength_ = storeService->loadHeader();
+                
+                storeService->readFullBytes(startOffset_, storeBodyLength_, &dic);
+                dic_.swap(dic);
             }
 
             void toString()

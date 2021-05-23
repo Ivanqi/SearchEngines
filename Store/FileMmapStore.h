@@ -47,9 +47,43 @@ namespace Store
                 close(fd);
             }
 
-            void readFullBytes(int64_t offset, int64_t len)
+            unsigned int loadHeader()
             {
+                unsigned long shLen = sizeof(StoreHeader);
+                // 获取头部数据
+                StoreHeader sh;
+                memcpy(&sh, mmapBytes_, shLen);
+                unsigned int headerLen = sh.len;      // 数据长度
+                return headerLen;
+            }
 
+            void readFullBytes(int64_t offset, int64_t len, std::map<std::string, Message::DictValue>* dic)
+            {  
+                unsigned long sbLen = sizeof(StoreBody) / ALIGNMENT;
+                len /= ALIGNMENT;
+
+                // 略过头部数据字节
+                int *mmapBytes = mmapBytes_ + (sizeof(StoreHeader) / ALIGNMENT);        
+
+                std::map<std::string, Message::DictValue> tmp;
+
+                if (len >= sbLen) {
+                    while (len >= sbLen && len >= 0) {
+                        StoreBody sb;
+                        memcpy(&sb, mmapBytes + offset, sbLen * ALIGNMENT);
+                        len -= sbLen;
+                        offset += sbLen;
+                        std::string key(sb.key);
+                        tmp[key] = sb.dv;
+                    }
+                }
+
+                dic->swap(tmp);
+            }
+
+            int64_t appendBytes(std::map<std::string, Message::DictValue>& dic)
+            {
+                return 0;
             }
 
     };
